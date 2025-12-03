@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shastra - Advanced Gunshot Detection System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* CSS Reset and Base Styles */
         * {
@@ -15,18 +15,17 @@
         }
 
         :root {
-            --primary-color: #00ff9d;
-            --primary-glow: rgba(0, 255, 157, 0.5);
-            --secondary-color: #00a6ff;
-            --accent-color: #ff3d57;
+            --primary-color: #00ff00;
+            --secondary-color: #00cc00;
+            --accent-color: #ff4444;
             --bg-dark: #0a0f14;
             --bg-medium: #121a22;
             --bg-light: #1a2530;
             --text-primary: #ffffff;
-            --text-secondary: #c8d6e5;
-            --transition-fast: all 0.2s ease;
-            --transition-normal: all 0.3s ease;
-            --transition-slow: all 0.5s ease;
+            --text-secondary: #b0bec5;
+            --success: #00e676;
+            --warning: #ffaa00;
+            --error: #ff5252;
         }
 
         body {
@@ -36,62 +35,9 @@
             overflow-x: hidden;
             line-height: 1.6;
             font-size: 16px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Simple Background Pattern */
-        .background-pattern {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 255, 157, 0.03) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(0, 166, 255, 0.03) 0%, transparent 20%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* Optimized Mobile Navigation */
-        .mobile-header {
-            display: none;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(10, 15, 20, 0.98);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(0, 255, 157, 0.2);
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .mobile-header .logo-text {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--primary-color);
-            text-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
-        }
-
-        .mobile-menu-btn {
-            background: rgba(0, 255, 157, 0.1);
-            border: 1px solid var(--primary-color);
-            border-radius: 5px;
-            color: var(--text-primary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 8px 12px;
-            transition: var(--transition-normal);
-        }
-
-        .mobile-menu-btn:active {
-            transform: scale(0.95);
-        }
-
+        /* Enhanced Mobile Navigation */
         .mobile-nav-overlay {
             display: none;
             position: fixed;
@@ -103,18 +49,55 @@
             z-index: 9998;
         }
 
+        .mobile-nav-overlay.active {
+            display: block;
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 15, 20, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-header .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .mobile-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* Mobile Side Menu */
         .mobile-side-menu {
             position: fixed;
             top: 0;
             right: -300px;
-            width: 280px;
+            width: 300px;
             height: 100%;
             background: var(--bg-dark);
             z-index: 9999;
             transition: right 0.3s ease;
             padding: 20px;
             overflow-y: auto;
-            border-left: 1px solid rgba(0, 255, 157, 0.2);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
         }
 
         .mobile-side-menu.active {
@@ -127,14 +110,14 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 15px;
-            border-bottom: 1px solid rgba(0, 255, 157, 0.2);
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
         }
 
         .mobile-side-menu .close-menu {
             background: none;
             border: none;
             color: var(--text-primary);
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             cursor: pointer;
             padding: 5px;
         }
@@ -151,17 +134,16 @@
         .mobile-nav-links a {
             color: var(--text-primary);
             text-decoration: none;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            padding: 12px 15px;
+            padding: 10px 0;
             display: block;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            transition: var(--transition-normal);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: color 0.3s ease;
         }
 
-        .mobile-nav-links a:active {
-            background: rgba(0, 255, 157, 0.1);
+        .mobile-nav-links a:hover {
+            color: var(--primary-color);
         }
 
         .mobile-language-switcher {
@@ -175,10 +157,10 @@
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--primary-color);
             color: var(--text-primary);
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 8px 16px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: var(--transition-normal);
+            transition: all 0.3s ease;
             font-family: 'Orbitron', sans-serif;
             font-weight: 600;
             flex: 1;
@@ -199,13 +181,9 @@
         .mobile-contact-info p {
             margin-bottom: 10px;
             color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.95rem;
         }
 
-        /* Optimized Desktop Navigation */
+        /* Desktop Navigation */
         .navbar {
             position: fixed;
             top: 0;
@@ -214,7 +192,7 @@
             backdrop-filter: blur(10px);
             z-index: 100;
             padding: 1rem 0;
-            border-bottom: 1px solid rgba(0, 255, 157, 0.2);
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
         }
 
         .nav-container {
@@ -231,7 +209,7 @@
             font-size: 1.8rem;
             font-weight: 900;
             color: var(--primary-color);
-            text-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
 
         .nav-logo .logo-subtitle {
@@ -251,9 +229,8 @@
             color: var(--text-primary);
             text-decoration: none;
             font-weight: 600;
-            transition: var(--transition-normal);
+            transition: color 0.3s ease;
             position: relative;
-            padding: 5px 0;
         }
 
         .nav-link:hover {
@@ -263,7 +240,7 @@
         .nav-link::after {
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: -5px;
             left: 0;
             width: 0;
             height: 2px;
@@ -275,7 +252,7 @@
             width: 100%;
         }
 
-        /* Optimized Language Switcher */
+        /* Combined Language Switcher in Nav */
         .nav-language-switcher {
             display: flex;
             gap: 5px;
@@ -287,9 +264,9 @@
             border: 1px solid var(--primary-color);
             color: var(--text-primary);
             padding: 6px 12px;
-            border-radius: 5px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: var(--transition-normal);
+            transition: all 0.3s ease;
             font-family: 'Orbitron', sans-serif;
             font-weight: 600;
             font-size: 0.9rem;
@@ -300,27 +277,23 @@
             color: var(--bg-dark);
         }
 
-        /* Optimized Hero Section */
+        /* Hero Section */
         .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 6rem 1rem 2rem;
             position: relative;
-            overflow: hidden;
+            padding: 6rem 1rem 2rem;
         }
 
         .hero-content {
             max-width: 1200px;
-            width: 100%;
             display: grid;
             grid-template-columns: 1fr;
             gap: 3rem;
             align-items: center;
             text-align: center;
-            position: relative;
-            z-index: 1;
         }
 
         .hero-title {
@@ -328,9 +301,9 @@
             font-size: 2.5rem;
             font-weight: 900;
             color: var(--primary-color);
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
             margin-bottom: 1rem;
             line-height: 1.2;
-            text-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
         }
 
         .hero-subtitle {
@@ -346,9 +319,6 @@
             margin-bottom: 2rem;
             color: var(--text-secondary);
             line-height: 1.6;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .hero-buttons {
@@ -356,25 +326,22 @@
             flex-direction: column;
             gap: 1rem;
             margin-bottom: 2rem;
-            justify-content: center;
-            align-items: center;
         }
 
         .cta-button {
-            padding: 15px 30px;
+            padding: 14px 28px;
             border: none;
             border-radius: 5px;
             font-family: 'Rajdhani', sans-serif;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition-normal);
+            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
             text-decoration: none;
             display: inline-block;
             text-align: center;
-            min-width: 200px;
         }
 
         .cta-button.primary {
@@ -390,14 +357,10 @@
 
         .cta-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 255, 157, 0.2);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.3);
         }
 
-        .cta-button:active {
-            transform: translateY(0);
-        }
-
-        /* Optimized Radar Animation */
+        /* Radar Animation */
         .radar-animation {
             position: relative;
             width: 300px;
@@ -424,11 +387,11 @@
             background: conic-gradient(
                 from 0deg,
                 transparent 0%,
-                rgba(0, 255, 157, 0.1) 10%,
-                rgba(0, 255, 157, 0.3) 20%,
+                rgba(0, 255, 0, 0.1) 10%,
+                rgba(0, 255, 0, 0.3) 20%,
                 transparent 30%
             );
-            animation: radarRotate 3s linear infinite;
+            animation: radarRotate 4s linear infinite;
         }
 
         .radar-sweep {
@@ -439,7 +402,7 @@
             height: 50%;
             background: linear-gradient(to bottom, transparent, var(--primary-color));
             transform-origin: bottom center;
-            animation: radarSweep 1.5s linear infinite;
+            animation: radarSweep 2s linear infinite;
         }
 
         @keyframes radarRotate {
@@ -491,11 +454,10 @@
             50% { transform: rotate(45deg) translateY(-10px); }
         }
 
-        /* Optimized Stats Section */
+        /* Stats Section */
         .stats {
             background: var(--bg-medium);
             padding: 3rem 1rem;
-            position: relative;
         }
 
         .stats-container {
@@ -503,20 +465,17 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .stat-item {
             text-align: center;
-            padding: 2rem 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            border: 1px solid rgba(0, 255, 157, 0.1);
+            padding: 1.5rem 1rem;
         }
 
         .stat-number {
             font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
@@ -524,28 +483,26 @@
         }
 
         .stat-label {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        /* Optimized About Section */
+        /* About Section */
         .about {
             padding: 4rem 1rem;
-            position: relative;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 1rem;
-            position: relative;
         }
 
         .section-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 2.2rem;
+            font-size: 2rem;
             text-align: center;
             margin-bottom: 3rem;
             color: var(--primary-color);
@@ -564,7 +521,6 @@
             line-height: 1.6;
             margin-bottom: 2rem;
             color: var(--text-secondary);
-            text-align: center;
         }
 
         .features-grid {
@@ -576,16 +532,10 @@
 
         .feature {
             text-align: center;
-            padding: 2rem 1.5rem;
-            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
-            border: 1px solid rgba(0, 255, 157, 0.1);
-            transition: var(--transition-normal);
-        }
-
-        .feature:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-color);
+            border: 1px solid rgba(0, 255, 0, 0.2);
         }
 
         .feature i {
@@ -605,192 +555,7 @@
             color: var(--text-secondary);
         }
 
-        /* Optimized Contact Section */
-        .contact {
-            padding: 4rem 1rem;
-            background: var(--bg-medium);
-            position: relative;
-        }
-
-        .contact-content {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 3rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .contact-info {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            border: 1px solid rgba(0, 255, 157, 0.1);
-        }
-
-        .contact-item i {
-            font-size: 1.3rem;
-            color: var(--primary-color);
-            min-width: 30px;
-        }
-
-        .contact-item span {
-            font-size: 1.1rem;
-            color: var(--text-primary);
-        }
-
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 2rem;
-            border-radius: 10px;
-            border: 1px solid rgba(0, 255, 157, 0.1);
-        }
-
-        .contact-form input,
-        .contact-form textarea {
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(0, 255, 157, 0.2);
-            border-radius: 5px;
-            color: var(--text-primary);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
-            transition: var(--transition-normal);
-        }
-
-        .contact-form input:focus,
-        .contact-form textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        .contact-form button {
-            padding: 15px;
-            background: var(--primary-color);
-            color: var(--bg-dark);
-            border: none;
-            border-radius: 5px;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-normal);
-            font-size: 1.1rem;
-        }
-
-        .contact-form button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 255, 157, 0.2);
-        }
-
-        /* Optimized Footer */
-        .footer {
-            background: var(--bg-dark);
-            padding: 3rem 1rem 1.5rem;
-            border-top: 1px solid rgba(0, 255, 157, 0.2);
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .footer-section h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .footer-section p {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-section ul li a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 1rem;
-            transition: var(--transition-normal);
-            display: inline-block;
-        }
-
-        .footer-section ul li a:hover {
-            color: var(--primary-color);
-            transform: translateX(5px);
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 1.3rem;
-            transition: var(--transition-normal);
-            border: 1px solid rgba(0, 255, 157, 0.1);
-        }
-
-        .social-links a:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            transform: translateY(-3px);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Performance Optimizations */
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-        }
-
-        /* Optimized Responsive Design */
+        /* Responsive Design */
         @media (max-width: 768px) {
             /* Hide desktop navbar on mobile */
             .navbar {
@@ -807,7 +572,7 @@
                 padding-top: 80px;
             }
             
-            /* Optimize text sizes for mobile */
+            /* Adjust other sections for better mobile viewing */
             .hero-title {
                 font-size: 2.2rem;
             }
@@ -818,26 +583,6 @@
             
             .section-title {
                 font-size: 1.8rem;
-            }
-            
-            .cta-button {
-                width: 100%;
-                max-width: 300px;
-            }
-            
-            /* Optimize animations for mobile */
-            .radar-animation {
-                width: 250px;
-                height: 250px;
-            }
-            
-            /* Reduce animation complexity on mobile */
-            .radar-dish::before {
-                animation: radarRotate 4s linear infinite;
-            }
-            
-            .radar-sweep {
-                animation: radarSweep 2s linear infinite;
             }
         }
 
@@ -854,7 +599,7 @@
                 display: block;
             }
             
-            /* Desktop layout optimizations */
+            /* Adjust hero for desktop */
             .hero {
                 padding: 8rem 2rem 3rem;
             }
@@ -878,13 +623,9 @@
                 justify-content: flex-start;
             }
             
-            .cta-button {
-                width: auto;
-            }
-            
             .radar-animation {
-                width: 350px;
-                height: 350px;
+                width: 400px;
+                height: 400px;
             }
             
             .stats-container {
@@ -894,6 +635,10 @@
             
             .stat-number {
                 font-size: 3rem;
+            }
+            
+            .stat-label {
+                font-size: 1.1rem;
             }
             
             .section-title {
@@ -909,34 +654,24 @@
                 grid-template-columns: repeat(3, 1fr);
                 gap: 2rem;
             }
-            
-            .contact-content {
-                grid-template-columns: 1fr 1fr;
-                gap: 4rem;
-            }
-            
-            .footer-content {
-                grid-template-columns: 2fr 1fr 1fr;
-                gap: 3rem;
-            }
         }
 
-        /* Tablet optimizations */
-        @media (min-width: 481px) and (max-width: 768px) {
+        /* Common responsive adjustments */
+        @media (min-width: 480px) and (max-width: 768px) {
             .hero-title {
-                font-size: 2.8rem;
+                font-size: 2.5rem;
             }
             
             .stats-container {
                 grid-template-columns: repeat(2, 1fr);
             }
             
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .feature {
+                padding: 2rem;
             }
         }
 
-        /* Large desktop optimizations */
+        /* Large desktop screens */
         @media (min-width: 1200px) {
             .container {
                 padding: 0;
@@ -950,55 +685,35 @@
         /* Touch device optimizations */
         @media (hover: none) and (pointer: coarse) {
             .cta-button,
-            .lang-btn,
-            .feature,
-            .contact-item {
-                min-height: 50px;
+            .lang-btn {
+                min-height: 44px;
+                min-width: 44px;
             }
             
             .nav-link {
                 padding: 10px 0;
             }
-            
-            /* Reduce hover effects on touch devices */
-            .cta-button:hover,
-            .feature:hover,
-            .contact-form button:hover {
-                transform: none;
-            }
         }
 
-        /* Print styles */
-        @media print {
-            .background-pattern,
-            .mobile-header,
-            .navbar,
-            .hero-buttons,
-            .contact-form button,
-            .social-links {
-                display: none !important;
+        /* Landscape mode optimization */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .hero {
+                min-height: auto;
+                padding: 100px 1rem 2rem;
             }
             
-            body {
-                background: white !important;
-                color: black !important;
-                font-size: 12pt !important;
+            .hero-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
             }
             
-            .hero,
-            .stats,
-            .about,
-            .contact {
-                padding: 1rem !important;
-                min-height: auto !important;
+            .hero-title {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Simple Background Pattern -->
-    <div class="background-pattern"></div>
-    
     <!-- Mobile Navigation -->
     <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
     
@@ -1021,7 +736,7 @@
             <li><a href="#home" class="mobile-nav-link" data-en="Home" data-ru="Главная">Home</a></li>
             <li><a href="#about" class="mobile-nav-link" data-en="About" data-ru="О системе">About</a></li>
             <li><a href="#technology" class="mobile-nav-link" data-en="Technology" data-ru="Технологии">Technology</a></li>
-            <li><a href="demo.html" class="mobile-nav-link" data-en="Demo" data-ru="Демо">Demo</a></li>
+            <li><a href="#demo" class="mobile-nav-link" data-en="Demo" data-ru="Демо">Demo</a></li>
             <li><a href="#contact" class="mobile-nav-link" data-en="Contact" data-ru="Контакты">Contact</a></li>
         </ul>
         
@@ -1033,7 +748,6 @@
         <div class="mobile-contact-info">
             <p><i class="fas fa-envelope"></i> kulshresht.sirvi.25@gmail.com</p>
             <p><i class="fas fa-phone"></i> +91 7498199766</p>
-            <p><i class="fas fa-map-marker-alt"></i> SPPU Pune</p>
         </div>
     </div>
 
@@ -1052,9 +766,10 @@
                     <a href="#about" class="nav-link" data-en="About" data-ru="О системе">About</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#technology" class="nav-link" data-en="Technology" data-ru="Технологии">Technology</a></li>
+                    <a href="#technology" class="nav-link" data-en="Technology" data-ru="Технологии">Technology</a>
+                </li>
                 <li class="nav-item">
-                    <a href="demo.html" class="nav-link" data-en="Demo" data-ru="Демо">Demo</a>
+                    <a href="#demo" class="nav-link" data-en="Demo" data-ru="Демо">Demo</a>
                 </li>
                 <li class="nav-item">
                     <a href="#contact" class="nav-link" data-en="Contact" data-ru="Контакты">Contact</a>
@@ -1156,7 +871,21 @@
                     </div>
                 </div>
                 <div class="about-visual">
-                    <!-- Space for diagram if needed -->
+                    <div class="system-diagram" style="height: 250px; display: flex; justify-content: space-between; align-items: center; position: relative;">
+                        <div class="diagram-element sensor" style="text-align: center; z-index: 2;">
+                            <i class="fas fa-microphone" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                            <span data-en="Acoustic Sensor" data-ru="Акустический Датчик">Acoustic Sensor</span>
+                        </div>
+                        <div class="diagram-element processor" style="text-align: center; z-index: 2;">
+                            <i class="fas fa-server" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                            <span data-en="AI Processor" data-ru="ИИ Процессор">AI Processor</span>
+                        </div>
+                        <div class="diagram-element output" style="text-align: center; z-index: 2;">
+                            <i class="fas fa-map-marker-alt" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                            <span data-en="Location Output" data-ru="Выход Локации">Location Output</span>
+                        </div>
+                        <div class="connection-line" style="position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--primary-color); z-index: 1;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1168,74 +897,59 @@
             <h2 class="section-title" data-en="Get In Touch" data-ru="Свяжитесь с Нами">Get In Touch</h2>
             <div class="contact-content">
                 <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
+                    <div class="contact-item" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <i class="fas fa-envelope" style="font-size: 1.5rem; color: var(--primary-color); width: 30px;"></i>
                         <span>kulshresht.sirvi.25@gmail.com</span>
                     </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
+                    <div class="contact-item" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <i class="fas fa-phone" style="font-size: 1.5rem; color: var(--primary-color); width: 30px;"></i>
                         <span>+91 7498199766</span>
                     </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
+                    <div class="contact-item" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <i class="fas fa-map-marker-alt" style="font-size: 1.5rem; color: var(--primary-color); width: 30px;"></i>
                         <span data-en="SPPU Pune" data-ru="SPPU Пуна">SPPU Pune</span>
                     </div>
                 </div>
-                <form class="contact-form" id="contactForm">
-                    <input type="text" placeholder="Your Name" data-en="Your Name" data-ru="Ваше Имя" required>
-                    <input type="email" placeholder="Your Email" data-en="Your Email" data-ru="Ваш Email" required>
-                    <textarea placeholder="Your Message" data-en="Your Message" data-ru="Ваше Сообщение" rows="5" required></textarea>
-                    <button type="submit" data-en="Send Message" data-ru="Отправить Сообщение">Send Message</button>
+                <form class="contact-form" id="contactForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="text" placeholder="Your Name" data-en="Your Name" data-ru="Ваше Имя" required style="padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 255, 0, 0.3); border-radius: 5px; color: var(--text-primary); font-family: 'Rajdhani', sans-serif;">
+                    <input type="email" placeholder="Your Email" data-en="Your Email" data-ru="Ваш Email" required style="padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 255, 0, 0.3); border-radius: 5px; color: var(--text-primary); font-family: 'Rajdhani', sans-serif;">
+                    <textarea placeholder="Your Message" data-en="Your Message" data-ru="Ваше Сообщение" rows="5" required style="padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 255, 0, 0.3); border-radius: 5px; color: var(--text-primary); font-family: 'Rajdhani', sans-serif;"></textarea>
+                    <button type="submit" data-en="Send Message" data-ru="Отправить Сообщение" style="padding: 14px; background: var(--primary-color); color: var(--bg-dark); border: none; border-radius: 5px; font-family: 'Rajdhani', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">Send Message</button>
                 </form>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" style="background: var(--bg-dark); padding: 3rem 0 1rem; border-top: 1px solid rgba(0, 255, 0, 0.2);">
         <div class="container">
-            <div class="footer-content">
+            <div class="footer-content" style="display: grid; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 2rem;">
                 <div class="footer-section">
-                    <h3 data-en="SHASTRA" data-ru="ШАСТРА">SHASTRA</h3>
-                    <p data-en="Advanced Gunshot Detection System" data-ru="Передовая Система Обнаружения Выстрелов">Advanced Gunshot Detection System</p>
-                    <div class="social-links">
-                        <a href="https://www.linkedin.com/in/kulshresht-sirvi" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.instagram.com/kulshresht.sirvi?igsh=NGluMzgyYnFpZmxy&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="https://github.com/kulshresht25" target="_blank"><i class="fab fa-github"></i></a>
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem;" data-en="SHASTRA" data-ru="ШАСТРА">SHASTRA</h3>
+                    <p style="color: var(--text-secondary);" data-en="Advanced Gunshot Detection System" data-ru="Передовая Система Обнаружения Выстрелов">Advanced Gunshot Detection System</p>
+                </div>
+                <div class="footer-section">
+                    <h4 style="color: var(--primary-color); margin-bottom: 1rem;" data-en="Connect" data-ru="Связь">Connect</h4>
+                    <div class="social-links" style="display: flex; gap: 1rem;">
+                        <a href="https://www.linkedin.com/in/kulshresht-sirvi" target="_blank" style="color: var(--text-secondary); font-size: 1.5rem; transition: color 0.3s ease;"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.instagram.com/kulshresht.sirvi?igsh=NGluMzgyYnFpZmxy&utm_source=qr" target="_blank" style="color: var(--text-secondary); font-size: 1.5rem; transition: color 0.3s ease;"><i class="fab fa-instagram"></i></a>
+                        <a href="https://github.com/kulshresht25" target="_blank" style="color: var(--text-secondary); font-size: 1.5rem; transition: color 0.3s ease;"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
-                <div class="footer-section">
-                    <h4 data-en="Quick Links" data-ru="Быстрые Ссылки">Quick Links</h4>
-                    <ul>
-                        <li><a href="#home" data-en="Home" data-ru="Главная">Home</a></li>
-                        <li><a href="#about" data-en="About" data-ru="О системе">About</a></li>
-                        <li><a href="#technology" data-en="Technology" data-ru="Технологии">Technology</a></li>
-                        <li><a href="demo.html" data-en="Demo" data-ru="Демо">Demo</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4 data-en="Technology" data-ru="Технологии">Technology</h4>
-                    <ul>
-                        <li><a href="#" data-en="Acoustic Analysis" data-ru="Акустический Анализ">Acoustic Analysis</a></li>
-                        <li><a href="#" data-en="AI Processing" data-ru="ИИ Обработка">AI Processing</a></li>
-                        <li><a href="#" data-en="Real-time Tracking" data-ru="Отслеживание в Реальном Времени">Real-time Tracking</a></li>
-                    </ul>
-                </div>
             </div>
-            <div class="footer-bottom">
+            <div class="footer-bottom" style="text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-secondary);">
                 <p>&copy; 2024 Shastra Security Systems. <span data-en="All rights reserved." data-ru="Все права защищены.">All rights reserved.</span></p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Performance Optimized Script
-        
         // Mobile menu functionality
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const closeMenuBtn = document.getElementById('closeMenuBtn');
         const mobileSideMenu = document.getElementById('mobileSideMenu');
         const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
         
         // Open mobile menu
         mobileMenuBtn.addEventListener('click', () => {
@@ -1255,31 +969,31 @@
         mobileNavOverlay.addEventListener('click', closeMobileMenu);
         
         // Close menu when clicking on a link
-        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        mobileNavLinks.forEach(link => {
             link.addEventListener('click', closeMobileMenu);
         });
         
-        // Language Manager - Optimized
+        // Language switching functionality
         class LanguageManager {
             constructor() {
                 this.currentLang = 'en';
-                this.elements = [];
+                this.elements = document.querySelectorAll('[data-en], [data-ru]');
                 this.init();
             }
             
             init() {
-                // Cache all translatable elements
-                this.elements = document.querySelectorAll('[data-en], [data-ru]');
-                
-                // Add event listeners to language buttons
+                // Add event listeners to all language buttons
                 document.querySelectorAll('.lang-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
-                        const lang = e.target.dataset.lang;
+                        const lang = e.target.getAttribute('data-lang') || e.target.closest('.lang-btn').getAttribute('data-lang');
                         if (lang) {
                             this.switchLanguage(lang);
                         }
                     });
                 });
+                
+                // Set initial language
+                this.updateLanguage();
                 
                 // Load saved preference
                 const savedLang = localStorage.getItem('shastra-language');
@@ -1320,100 +1034,49 @@
             }
         }
         
-        // Smooth scrolling
-        function initSmoothScroll() {
+        // Initialize language manager
+        document.addEventListener('DOMContentLoaded', () => {
+            new LanguageManager();
+            
+            // Contact form submission
+            document.getElementById('contactForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Thank you for your message! We will get back to you soon.');
+                this.reset();
+            });
+            
+            // Smooth scrolling for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
-                    const href = this.getAttribute('href');
-                    if (href === '#') return;
-                    
                     e.preventDefault();
-                    const target = document.querySelector(href);
+                    const target = document.querySelector(this.getAttribute('href'));
                     if (target) {
-                        window.scrollTo({
-                            top: target.offsetTop - 80,
-                            behavior: 'smooth'
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
                         });
                     }
                 });
             });
-        }
-        
-        // Contact form handling
-        function initContactForm() {
-            const form = document.getElementById('contactForm');
-            if (!form) return;
             
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const submitBtn = this.querySelector('button[type="submit"]');
-                const originalText = submitBtn.textContent;
-                
-                // Show success state
-                submitBtn.textContent = 'Message Sent!';
-                submitBtn.style.background = '#00e676';
-                
-                // Reset form
-                this.reset();
-                
-                // Reset button after 3 seconds
-                setTimeout(() => {
-                    submitBtn.textContent = originalText;
-                    submitBtn.style.background = '';
-                }, 3000);
-            });
-        }
-        
-        // Initialize on DOM Content Loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize components
-            new LanguageManager();
-            initSmoothScroll();
-            initContactForm();
-            
-            // Add scroll event for navbar background
-            let lastScrollY = window.scrollY;
+            // Parallax effect for hero
             window.addEventListener('scroll', () => {
-                const scrollY = window.scrollY;
-                const navbar = document.querySelector('.navbar');
-                const mobileHeader = document.querySelector('.mobile-header');
-                
-                if (scrollY > 100) {
-                    if (navbar) navbar.style.background = 'rgba(10, 15, 20, 0.98)';
-                    if (mobileHeader) mobileHeader.style.background = 'rgba(10, 15, 20, 0.98)';
-                } else {
-                    if (navbar) navbar.style.background = 'rgba(10, 15, 20, 0.95)';
-                    if (mobileHeader) mobileHeader.style.background = 'rgba(10, 15, 20, 0.95)';
+                const hero = document.querySelector('.hero');
+                if (hero && window.innerWidth > 768) {
+                    const scrolled = window.scrollY;
+                    const parallax = scrolled * 0.5;
+                    hero.style.transform = `translateY(${parallax}px)`;
                 }
-                
-                lastScrollY = scrollY;
-            }, { passive: true });
+            });
         });
         
         // Handle window resize
-        let resizeTimeout;
         window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                // Close mobile menu if switching to desktop
-                if (window.innerWidth > 768 && mobileSideMenu.classList.contains('active')) {
-                    closeMobileMenu();
-                }
-            }, 250);
-        }, { passive: true });
-        
-        // Performance optimization for animations
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    // Handle any scroll-based animations here
-                    ticking = false;
-                });
-                ticking = true;
+            // Close mobile menu if switching to desktop
+            if (window.innerWidth > 768 && mobileSideMenu.classList.contains('active')) {
+                closeMobileMenu();
             }
-        }, { passive: true });
+        });
     </script>
 </body>
 </html>
