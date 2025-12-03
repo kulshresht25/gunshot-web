@@ -4,43 +4,754 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shastra - Advanced Gunshot Detection System</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Additional styles to fix overlapping and improve functionality */
-        .language-switcher {
-            z-index: 1001;
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        .hero-buttons {
+
+        :root {
+            --primary-color: #00ff00;
+            --secondary-color: #00cc00;
+            --accent-color: #ff4444;
+            --bg-dark: #0a0f14;
+            --bg-medium: #121a22;
+            --bg-light: #1a2530;
+            --text-primary: #ffffff;
+            --text-secondary: #b0bec5;
+            --success: #00e676;
+            --warning: #ffaa00;
+            --error: #ff5252;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* Enhanced Mobile Navigation */
+        .mobile-nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9998;
+        }
+
+        .mobile-nav-overlay.active {
+            display: block;
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 15, 20, 0.98);
+            backdrop-filter: blur(10px);
             z-index: 1000;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-header .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .mobile-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* Mobile Side Menu */
+        .mobile-side-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 9999;
+            transition: right 0.3s ease;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .mobile-side-menu.active {
+            right: 0;
+        }
+
+        .mobile-side-menu .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .mobile-side-menu .close-menu {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: 15px;
+        }
+
+        .mobile-nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 10px 0;
+            display: block;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: color 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .mobile-language-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .mobile-language-switcher .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            flex: 1;
+            max-width: 120px;
+        }
+
+        .mobile-language-switcher .lang-btn.active {
+            background: var(--primary-color);
+            color: var(--bg-dark);
+        }
+
+        .mobile-contact-info {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-contact-info p {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        /* Desktop Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 15, 20, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-logo .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .nav-logo .logo-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-left: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
             position: relative;
         }
-        
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Combined Language Switcher in Nav */
+        .nav-language-switcher {
+            display: flex;
+            gap: 5px;
+            margin-left: 2rem;
+        }
+
+        .nav-language-switcher .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--text-primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .nav-language-switcher .lang-btn.active {
+            background: var(--primary-color);
+            color: var(--bg-dark);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 6rem 1rem 2rem;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
         .cta-button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             text-decoration: none;
             display: inline-block;
             text-align: center;
         }
-        
-        .contact-form button {
+
+        .cta-button.primary {
+            background: var(--primary-color);
+            color: var(--bg-dark);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.3);
+        }
+
+        /* Radar Animation */
+        .radar-animation {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .radar-dish {
             width: 100%;
+            height: 100%;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .radar-dish::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0%,
+                rgba(0, 255, 0, 0.1) 10%,
+                rgba(0, 255, 0, 0.3) 20%,
+                transparent 30%
+            );
+            animation: radarRotate 4s linear infinite;
+        }
+
+        .radar-sweep {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 50%;
+            background: linear-gradient(to bottom, transparent, var(--primary-color));
+            transform-origin: bottom center;
+            animation: radarSweep 2s linear infinite;
+        }
+
+        @keyframes radarRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes radarSweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .detection-points .point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .scroll-arrow {
+            width: 20px;
+            height: 20px;
+            border-right: 2px solid var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            transform: rotate(45deg);
+            margin: 10px auto;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: rotate(45deg) translateY(0); }
+            50% { transform: rotate(45deg) translateY(-10px); }
+        }
+
+        /* Stats Section */
+        .stats {
+            background: var(--bg-medium);
+            padding: 3rem 1rem;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem 1rem;
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* About Section */
+        .about {
+            padding: 4rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+            line-height: 1.3;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .feature i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            /* Hide desktop navbar on mobile */
+            .navbar {
+                display: none;
+            }
+            
+            /* Show mobile header */
+            .mobile-header {
+                display: flex;
+            }
+            
+            /* Adjust hero padding for mobile header */
+            .hero {
+                padding-top: 80px;
+            }
+            
+            /* Adjust other sections for better mobile viewing */
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (min-width: 769px) {
+            /* Hide mobile elements on desktop */
+            .mobile-header,
+            .mobile-side-menu,
+            .mobile-nav-overlay {
+                display: none !important;
+            }
+            
+            /* Show desktop navbar */
+            .navbar {
+                display: block;
+            }
+            
+            /* Adjust hero for desktop */
+            .hero {
+                padding: 8rem 2rem 3rem;
+            }
+            
+            .hero-content {
+                grid-template-columns: 1fr 1fr;
+                text-align: left;
+                gap: 4rem;
+            }
+            
+            .hero-title {
+                font-size: 3.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.5rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+            
+            .radar-animation {
+                width: 400px;
+                height: 400px;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 3rem;
+            }
+            
+            .stat-label {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .about-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        /* Common responsive adjustments */
+        @media (min-width: 480px) and (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .feature {
+                padding: 2rem;
+            }
+        }
+
+        /* Large desktop screens */
+        @media (min-width: 1200px) {
+            .container {
+                padding: 0;
+            }
+            
+            .hero-title {
+                font-size: 4rem;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .cta-button,
+            .lang-btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .nav-link {
+                padding: 10px 0;
+            }
+        }
+
+        /* Landscape mode optimization */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .hero {
+                min-height: auto;
+                padding: 100px 1rem 2rem;
+            }
+            
+            .hero-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Language Switcher -->
-    <div class="language-switcher">
-        <button id="lang-en" class="lang-btn active">EN</button>
-        <button id="lang-ru" class="lang-btn">RU</button>
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    
+    <div class="mobile-header">
+        <div class="logo-text">SHASTRA</div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    
+    <div class="mobile-side-menu" id="mobileSideMenu">
+        <div class="menu-header">
+            <div class="logo-text">SHASTRA</div>
+            <button class="close-menu" id="closeMenuBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <ul class="mobile-nav-links">
+            <li><a href="#home" class="mobile-nav-link" data-en="Home" data-ru="Главная">Home</a></li>
+            <li><a href="#about" class="mobile-nav-link" data-en="About" data-ru="О системе">About</a></li>
+            <li><a href="#technology" class="mobile-nav-link" data-en="Technology" data-ru="Технологии">Technology</a></li>
+            <li><a href="#demo" class="mobile-nav-link" data-en="Demo" data-ru="Демо">Demo</a></li>
+            <li><a href="#contact" class="mobile-nav-link" data-en="Contact" data-ru="Контакты">Contact</a></li>
+        </ul>
+        
+        <div class="mobile-language-switcher">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="ru">RU</button>
+        </div>
+        
+        <div class="mobile-contact-info">
+            <p><i class="fas fa-envelope"></i> kulshresht.sirvi.25@gmail.com</p>
+            <p><i class="fas fa-phone"></i> +91 7498199766</p>
+        </div>
     </div>
 
-    <!-- Background Animation Canvas -->
-    <canvas id="radarCanvas"></canvas>
-    <div class="particles-container" id="particles"></div>
-
-    <!-- Navigation -->
+    <!-- Desktop Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
@@ -51,27 +762,25 @@
                 <li class="nav-item">
                     <a href="#home" class="nav-link" data-en="Home" data-ru="Главная">Home</a>
                 </li>
-                <li class="nav-item">   
+                <li class="nav-item">
                     <a href="#about" class="nav-link" data-en="About" data-ru="О системе">About</a>
                 </li>
                 <li class="nav-item">
                     <a href="#technology" class="nav-link" data-en="Technology" data-ru="Технологии">Technology</a>
                 </li>
                 <li class="nav-item">
-                    <a href="demo.html" class="nav-link" data-en="Demo" data-ru="Демо">Demo</a>
+                    <a href="#demo" class="nav-link" data-en="Demo" data-ru="Демо">Demo</a>
                 </li>
                 <li class="nav-item">
                     <a href="#contact" class="nav-link" data-en="Contact" data-ru="Контакты">Contact</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#contact" class="nav-link" data-en="----------" data-ru="----------"></a>
+                    <div class="nav-language-switcher">
+                        <button class="lang-btn active" data-lang="en">EN</button>
+                        <button class="lang-btn" data-lang="ru">RU</button>
+                    </div>
                 </li>
             </ul>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
         </div>
     </nav>
 
@@ -112,22 +821,24 @@
 
     <!-- Stats Section -->
     <section class="stats">
-        <div class="stats-container">
-            <div class="stat-item">
-                <div class="stat-number" data-en="99.2%" data-ru="99,2%">99.2%</div>
-                <div class="stat-label" data-en="Detection Accuracy" data-ru="Точность Обнаружения">Detection Accuracy</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" data-en="0.3s" data-ru="0,3с">0.3s</div>
-                <div class="stat-label" data-en="Response Time" data-ru="Время Реакции">Response Time</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" data-en="500m" data-ru="500м">500m</div>
-                <div class="stat-label" data-en="Detection Range" data-ru="Дальность Обнаружения">Detection Range</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" data-en="5°" data-ru="5°">5°</div>
-                <div class="stat-label" data-en="Direction Precision" data-ru="Точность Направления">Direction Precision</div>
+        <div class="container">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number" data-en="99.2%" data-ru="99,2%">99.2%</div>
+                    <div class="stat-label" data-en="Detection Accuracy" data-ru="Точность Обнаружения">Detection Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-en="0.3s" data-ru="0,3с">0.3s</div>
+                    <div class="stat-label" data-en="Response Time" data-ru="Время Реакции">Response Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-en="500m" data-ru="500м">500m</div>
+                    <div class="stat-label" data-en="Detection Range" data-ru="Дальность Обнаружения">Detection Range</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-en="5°" data-ru="5°">5°</div>
+                    <div class="stat-label" data-en="Direction Precision" data-ru="Точность Направления">Direction Precision</div>
+                </div>
             </div>
         </div>
     </section>
@@ -160,51 +871,21 @@
                     </div>
                 </div>
                 <div class="about-visual">
-                    <div class="system-diagram">
-                        <div class="diagram-element sensor">
-                            <i class="fas fa-microphone"></i>
+                    <div class="system-diagram" style="height: 250px; display: flex; justify-content: space-between; align-items: center; position: relative;">
+                        <div class="diagram-element sensor" style="text-align: center; z-index: 2;">
+                            <i class="fas fa-microphone" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
                             <span data-en="Acoustic Sensor" data-ru="Акустический Датчик">Acoustic Sensor</span>
                         </div>
-                        <div class="diagram-element processor">
-                            <i class="fas fa-server"></i>
+                        <div class="diagram-element processor" style="text-align: center; z-index: 2;">
+                            <i class="fas fa-server" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
                             <span data-en="AI Processor" data-ru="ИИ Процессор">AI Processor</span>
                         </div>
-                        <div class="diagram-element output">
-                            <i class="fas fa-map-marker-alt"></i>
+                        <div class="diagram-element output" style="text-align: center; z-index: 2;">
+                            <i class="fas fa-map-marker-alt" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
                             <span data-en="Location Output" data-ru="Выход Локации">Location Output</span>
                         </div>
-                      
+                        <div class="connection-line" style="position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--primary-color); z-index: 1;"></div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Technology Section -->
-    <section id="technology" class="technology">
-        <div class="container">
-            <h2 class="section-title" data-en="Advanced Technology" data-ru="Передовые Технологии">Advanced Technology</h2>
-            <div class="tech-grid">
-                <div class="tech-card">
-                    <div class="tech-icon">
-                        <i class="fas fa-wave-square"></i>
-                    </div>
-                    <h3 data-en="Acoustic Analysis" data-ru="Акустический Анализ">Acoustic Analysis</h3>
-                    <p data-en="Advanced signal processing for gunshot signature recognition" data-ru="Продвинутая обработка сигналов для распознавания подписи выстрела">Advanced signal processing for gunshot signature recognition</p>
-                </div>
-                <div class="tech-card">
-                    <div class="tech-icon">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <h3 data-en="Neural Networks" data-ru="Нейронные Сети">Neural Networks</h3>
-                    <p data-en="Deep learning models for pattern recognition and classification" data-ru="Модели глубокого обучения для распознавания образов">Deep learning models for pattern recognition and classification</p>
-                </div>
-                <div class="tech-card">
-                    <div class="tech-icon">
-                        <i class="fas fa-satellite"></i>
-                    </div>
-                    <h3 data-en="Multi-Sensor Fusion" data-ru="Мультисенсорное Слияние">Multi-Sensor Fusion</h3>
-                    <p data-en="Combining multiple data sources for enhanced accuracy" data-ru="Объединение множества источников данных">Combining multiple data sources for enhanced accuracy</p>
                 </div>
             </div>
         </div>
@@ -216,68 +897,185 @@
             <h2 class="section-title" data-en="Get In Touch" data-ru="Свяжитесь с Нами">Get In Touch</h2>
             <div class="contact-content">
                 <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
+                    <div class="contact-item" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <i class="fas fa-envelope" style="font-size: 1.5rem; color: var(--primary-color); width: 30px;"></i>
                         <span>kulshresht.sirvi.25@gmail.com</span>
                     </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>+91-7498199766</span>
+                    <div class="contact-item" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <i class="fas fa-phone" style="font-size: 1.5rem; color: var(--primary-color); width: 30px;"></i>
+                        <span>+91 7498199766</span>
                     </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
+                    <div class="contact-item" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <i class="fas fa-map-marker-alt" style="font-size: 1.5rem; color: var(--primary-color); width: 30px;"></i>
                         <span data-en="SPPU Pune" data-ru="SPPU Пуна">SPPU Pune</span>
                     </div>
                 </div>
-                <form class="contact-form" id="contactForm">
-                    <input type="text" placeholder="Your Name" data-en="Your Name" data-ru="Ваше Имя" required>
-                    <input type="email" placeholder="Your Email" data-en="Your Email" data-ru="Ваш Email" required>
-                    <textarea placeholder="Your Message" data-en="Your Message" data-ru="Ваше Сообщение" rows="5" required></textarea>
-                    <button type="submit" data-en="Send Message" data-ru="Отправить Сообщение">Send Message</button>
+                <form class="contact-form" id="contactForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="text" placeholder="Your Name" data-en="Your Name" data-ru="Ваше Имя" required style="padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 255, 0, 0.3); border-radius: 5px; color: var(--text-primary); font-family: 'Rajdhani', sans-serif;">
+                    <input type="email" placeholder="Your Email" data-en="Your Email" data-ru="Ваш Email" required style="padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 255, 0, 0.3); border-radius: 5px; color: var(--text-primary); font-family: 'Rajdhani', sans-serif;">
+                    <textarea placeholder="Your Message" data-en="Your Message" data-ru="Ваше Сообщение" rows="5" required style="padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 255, 0, 0.3); border-radius: 5px; color: var(--text-primary); font-family: 'Rajdhani', sans-serif;"></textarea>
+                    <button type="submit" data-en="Send Message" data-ru="Отправить Сообщение" style="padding: 14px; background: var(--primary-color); color: var(--bg-dark); border: none; border-radius: 5px; font-family: 'Rajdhani', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">Send Message</button>
                 </form>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" style="background: var(--bg-dark); padding: 3rem 0 1rem; border-top: 1px solid rgba(0, 255, 0, 0.2);">
         <div class="container">
-            <div class="footer-content">
+            <div class="footer-content" style="display: grid; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 2rem;">
                 <div class="footer-section">
-                    <h3 data-en="SHASTRA" data-ru="ШАСТРА">SHASTRA</h3>
-                    <p data-en="Advanced Gunshot Detection System" data-ru="Передовая Система Обнаружения Выстрелов">Advanced Gunshot Detection System</p>
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem;" data-en="SHASTRA" data-ru="ШАСТРА">SHASTRA</h3>
+                    <p style="color: var(--text-secondary);" data-en="Advanced Gunshot Detection System" data-ru="Передовая Система Обнаружения Выстрелов">Advanced Gunshot Detection System</p>
                 </div>
                 <div class="footer-section">
-                    <h4 data-en="Quick Links" data-ru="Быстрые Ссылки">Quick Links</h4>
-                    <ul>
-                        <li><a href="#home" data-en="Home" data-ru="Главная">Home</a></li>
-                        <li><a href="#about" data-en="About" data-ru="О системе">About</a></li>
-                        <li><a href="#technology" data-en="Technology" data-ru="Технологии">Technology</a></li>
-                        <li><a href="demo.html" data-en="Demo" data-ru="Демо">Demo</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4 data-en="Connect" data-ru="Связь">Connect</h4>
-                    <div class="social-links">
-                        <a href="https://www.linkedin.com/in/kulshresht-sirvi" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.instagram.com/kulshresht.sirvi?igsh=NGluMzgyYnFpZmxy&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="https://github.com/kulshresht25" target="_blank"><i class="fab fa-github"></i></a>
+                    <h4 style="color: var(--primary-color); margin-bottom: 1rem;" data-en="Connect" data-ru="Связь">Connect</h4>
+                    <div class="social-links" style="display: flex; gap: 1rem;">
+                        <a href="https://www.linkedin.com/in/kulshresht-sirvi" target="_blank" style="color: var(--text-secondary); font-size: 1.5rem; transition: color 0.3s ease;"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.instagram.com/kulshresht.sirvi?igsh=NGluMzgyYnFpZmxy&utm_source=qr" target="_blank" style="color: var(--text-secondary); font-size: 1.5rem; transition: color 0.3s ease;"><i class="fab fa-instagram"></i></a>
+                        <a href="https://github.com/kulshresht25" target="_blank" style="color: var(--text-secondary); font-size: 1.5rem; transition: color 0.3s ease;"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom">
+            <div class="footer-bottom" style="text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-secondary);">
                 <p>&copy; 2024 Shastra Security Systems. <span data-en="All rights reserved." data-ru="Все права защищены.">All rights reserved.</span></p>
             </div>
         </div>
     </footer>
 
-    <script src="script.js"></script>
     <script>
-        // Additional functionality for contact form
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thank you for your message! We will get back to you soon.');
-            this.reset();
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const mobileSideMenu = document.getElementById('mobileSideMenu');
+        const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+        
+        // Open mobile menu
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileSideMenu.classList.add('active');
+            mobileNavOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // Close mobile menu
+        function closeMobileMenu() {
+            mobileSideMenu.classList.remove('active');
+            mobileNavOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        closeMenuBtn.addEventListener('click', closeMobileMenu);
+        mobileNavOverlay.addEventListener('click', closeMobileMenu);
+        
+        // Close menu when clicking on a link
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+        
+        // Language switching functionality
+        class LanguageManager {
+            constructor() {
+                this.currentLang = 'en';
+                this.elements = document.querySelectorAll('[data-en], [data-ru]');
+                this.init();
+            }
+            
+            init() {
+                // Add event listeners to all language buttons
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const lang = e.target.getAttribute('data-lang') || e.target.closest('.lang-btn').getAttribute('data-lang');
+                        if (lang) {
+                            this.switchLanguage(lang);
+                        }
+                    });
+                });
+                
+                // Set initial language
+                this.updateLanguage();
+                
+                // Load saved preference
+                const savedLang = localStorage.getItem('shastra-language');
+                if (savedLang) {
+                    this.switchLanguage(savedLang);
+                }
+            }
+            
+            switchLanguage(lang) {
+                this.currentLang = lang;
+                
+                // Update active button
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelectorAll(`.lang-btn[data-lang="${lang}"]`).forEach(btn => {
+                    btn.classList.add('active');
+                });
+                
+                // Update all text elements
+                this.updateLanguage();
+                
+                // Save preference
+                localStorage.setItem('shastra-language', lang);
+            }
+            
+            updateLanguage() {
+                this.elements.forEach(element => {
+                    const text = element.getAttribute(`data-${this.currentLang}`);
+                    if (text) {
+                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                            element.placeholder = text;
+                        } else {
+                            element.textContent = text;
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Initialize language manager
+        document.addEventListener('DOMContentLoaded', () => {
+            new LanguageManager();
+            
+            // Contact form submission
+            document.getElementById('contactForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Thank you for your message! We will get back to you soon.');
+                this.reset();
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Parallax effect for hero
+            window.addEventListener('scroll', () => {
+                const hero = document.querySelector('.hero');
+                if (hero && window.innerWidth > 768) {
+                    const scrolled = window.scrollY;
+                    const parallax = scrolled * 0.5;
+                    hero.style.transform = `translateY(${parallax}px)`;
+                }
+            });
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            // Close mobile menu if switching to desktop
+            if (window.innerWidth > 768 && mobileSideMenu.classList.contains('active')) {
+                closeMobileMenu();
+            }
         });
     </script>
 </body>
